@@ -19,3 +19,6 @@ You can lower the number of enemies that reached the bottom by 1 if you kill 20 
 The player wins the game and therefore saves the planet if he can reach at least 100 point of score and if none of the dogs reached the planet or at least if those who reached were already "compensated (read the previous paragraph)".
 
 Have fun and try hard.
+
+Link to download:
+https://drive.google.com/file/d/1fe8hpcnf0ggr4Ekh4EQVF9zxetr4MzTg/view?usp=sharing
