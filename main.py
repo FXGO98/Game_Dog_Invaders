@@ -1,4 +1,5 @@
 import pygame
+import sys
 import random
 import math
 from pygame import mixer
@@ -81,14 +82,9 @@ textY = 10
 enemy_score = 0
 
 
-# Game Over Text
-winning_game = False
-
 winning_font = pygame.font.Font('MICKEY.TTF', 64)
 
 
-# Game Over Text
-game_over = False
 
 over_font = pygame.font.Font('MICKEY.TTF', 64)
 
@@ -139,215 +135,280 @@ def Player_Collision(enemyX, enemyY, playerX, playerY):
     else:
         return False
 
+def main_menu():
 
-# Game Loop
+    while True:
+
+        # Background Image
+        screen.blit(background,(0, 0))
+
+        button_1 = pygame.Rect(307, 198, 186, 64)
+        
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+
+        button_2 = pygame.Rect(310, 338, 186, 58)
+        
+        pygame.draw.rect(screen, (255, 0, 0), button_2)
+
+        start_button = pygame.image.load('start_button.png').convert()
+
+        screen.blit(start_button, (301, 191))
+
+        start_button = pygame.image.load('quit_button.png').convert()
+
+        screen.blit(start_button, (301, 331))
 
 
-running = True
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-# Playing Background music
-mixer.music.play(-1)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if button_1.collidepoint(x, y):
+                    game()
+
+                if button_2.collidepoint(x, y):
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
+
+
+def game():
+
+    global playerX, playerX_change, playerY, playerY_change, playerX_speed, playerY_speed
+    global bulletX, bulletY, speed_counter, enemyX_speed, score_value, enemy_score 
+    global bullet_state, bulletY_change, counter, num_of_enemies
     
-while running:
 
-    """ # RGB - Red, Green, Blue
-    screen.fill((100, 151, 177)) """
-
-    # Background Image
-    screen.blit(background,(0, 0))
-
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-
-        # if keystroke is pressed check whether its right or left
-        if event.type == pygame.KEYDOWN:
-
-            if event.key == pygame.K_LEFT:
-                playerX_change = -playerX_speed
-                    
-
-            if event.key == pygame.K_RIGHT:
-                playerX_change = playerX_speed
-
-
-            if event.key == pygame.K_UP:
-                playerY_change = -playerY_speed
-                    
-
-            if event.key == pygame.K_DOWN:
-                playerY_change = playerY_speed   
-
-
-            if event.key == pygame.K_SPACE:
-                if bullet_state is "ready":
-                    # Get the current x and y coordinates of the spaceship
-                    bulletX = playerX
-                    bulletY = playerY
-                    bullet_sound.play()
-                    fire_bullet(bulletX, bulletY)
+    # Playing Background music
+    mixer.music.play(-1)
         
+    while True:
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                playerX_change = 0
+        """ # RGB - Red, Green, Blue
+        screen.fill((100, 151, 177)) """
 
-            if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                playerY_change = 0
-
-
-    # Player Movement
-    playerX += playerX_change
-    playerY += playerY_change
+        # Background Image
+        screen.blit(background,(0, 0))
 
 
-    # Player Boundaries
-    if playerX <= 0:
-        playerX = 0
-        
-    elif ((playerX >= 736) and (playerX < 1500)):
-        playerX = 736
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-    elif playerX == 1500:
-        playerX = 2000
+            # if keystroke is pressed check whether its right or left
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    playerX_change = -playerX_speed
+                        
 
-    if playerY <= 0:
-        playerY = 0
-        
-    elif ((playerY >= 536) and (playerY < 1500)):
-        playerY = 536
-
-    elif playerY == 1500:
-        playerY = 2000
+                if event.key == pygame.K_RIGHT:
+                    playerX_change = playerX_speed
 
 
-    # Enemy Movement
-    for i in range (num_of_enemies):
+                if event.key == pygame.K_UP:
+                    playerY_change = -playerY_speed
+                        
 
-        # Winning Game
+                if event.key == pygame.K_DOWN:
+                    playerY_change = playerY_speed   
 
-        if (score_value >= 100) and (enemy_score == 0):
 
-            for j in range (num_of_enemies):
-                enemyY[j] = 2000
-            playerX = 2000
-            playerY = 2000  
-            winning_game = True
-            winning_text(150, 240)
-            pygame.mixer.music.stop()
-            bullet_sound.stop()
-            break
+                if event.key == pygame.K_SPACE:
+                    if bullet_state is "ready":
+                        # Get the current x and y coordinates of the spaceship
+                        bulletX = playerX
+                        bulletY = playerY
+                        bullet_sound.play()
+                        fire_bullet(bulletX, bulletY)
             
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    playerX_change = 0
+
+                if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    playerY_change = 0
+
+
+        # Player Movement
+        playerX += playerX_change
+        playerY += playerY_change
+
+
+        # Player Boundaries
+        if playerX <= 0:
+            playerX = 0
             
-        # Game Over
+        elif ((playerX >= 736) and (playerX < 1500)):
+            playerX = 736
 
-        player_enemy_collision = Player_Collision(enemyX[i] + 32 , enemyY[i] + 32, playerX + 32, playerY + 32)
-
-        if (enemy_score==3):
-
-            for j in range (num_of_enemies):
-                enemyY[j] = 2000
+        elif playerX == 1500:
             playerX = 2000
+
+        if playerY <= 0:
+            playerY = 0
+            
+        elif ((playerY >= 536) and (playerY < 1500)):
+            playerY = 536
+
+        elif playerY == 1500:
             playerY = 2000
-            game_over = True
-            game_over_text(300, 240)
-            pygame.mixer.music.stop()
-            bullet_sound.stop()
-            break
-
-        if (player_enemy_collision==True):
-
-            for j in range (num_of_enemies):
-                enemyY[j] = 2000
-            playerX = 2000
-            playerY = 2000
-            game_over_sound = mixer.Sound('Explosion.wav')
-            game_over_sound.play()
-            game_over = True
-            game_over_text(300, 240)
-            pygame.mixer.music.stop()
-            bullet_sound.stop()
-            break
 
 
-        enemyX[i] += enemyX_change[i]
+        # Enemy Movement
+        for i in range (num_of_enemies):
+
+            # Winning Game
+
+            if (score_value >= 2) and (enemy_score == 0):
+                game_winning()
+                
+                
+            # Game Over
+
+            player_enemy_collision = Player_Collision(enemyX[i] + 32 , enemyY[i] + 32, playerX + 32, playerY + 32)
+
+            if (enemy_score==3):
+
+                for j in range (num_of_enemies):
+                    enemyY[j] = 2000
+                playerX = 2000
+                playerY = 2000
+                game_over_text(300, 240)
+                pygame.mixer.music.stop()
+                bullet_sound.stop()
+                break
+
+            if (player_enemy_collision==True):
+
+                for j in range (num_of_enemies):
+                    enemyY[j] = 2000
+                playerX = 2000
+                playerY = 2000
+                game_over_sound = mixer.Sound('Explosion.wav')
+                game_over_sound.play()
+                game_over_text(300, 240)
+                pygame.mixer.music.stop()
+                bullet_sound.stop()
+                break
 
 
-        # Enemy Boundaries
-        if enemyX[i] <= 0:
-            enemyX_change[i] = enemyX_speed
-            enemyY[i] += enemyY_change[i] 
+            enemyX[i] += enemyX_change[i]
+
+
+            # Enemy Boundaries
+            if enemyX[i] <= 0:
+                enemyX_change[i] = enemyX_speed
+                enemyY[i] += enemyY_change[i] 
+                
+            elif enemyX[i] >= 736:
+                enemyX_change[i] = -enemyX_speed
+                enemyY[i] += enemyY_change[i] 
+
+            elif enemyY[i] <=30:
+                enemyY_change[i] = - enemyY_change[i]
+
+            elif ((enemyY[i] >=476) and (enemyY[i]<=506) and (enemy_attacks[i]==True)):
+                enemy_attacks[i] = False
+
+            elif enemyY[i] >= 506:
+                enemyY_change[i] = - enemyY_change[i]
+                if enemy_attacks[i] == False:
+                    enemy_attacks[i] = True
+                    enemy_score += 1
+
+            # Collision
+            collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
             
-        elif enemyX[i] >= 736:
-            enemyX_change[i] = -enemyX_speed
-            enemyY[i] += enemyY_change[i] 
+            if collision:
+                explosion_sound = mixer.Sound('Dog_Dies.wav')
+                explosion_sound.play()
+                bulletY = 900
+                bullet_state = "ready"
+                score_value += 1
+                speed_counter += 1
+                    
+                if enemy_score>0:
+                    counter += 1
 
-        elif enemyY[i] <=30:
-            enemyY_change[i] = - enemyY_change[i]
+                if counter >= 20:
+                    score_value -= 20
+                    enemy_score -= 1
+                    counter = 0
+                    speed_counter = 0
+                    bulletY_change -= 2
+                    enemyX_speed -= 1.5
+                    playerX_speed += 1.5
+                    playerY_speed += 1.5
 
-        elif ((enemyY[i] >=476) and (enemyY[i]<=506) and (enemy_attacks[i]==True)):
-            enemy_attacks[i] = False
+                if speed_counter == 10:
+                    speed_counter = 0
+                    bulletY_change += 2
+                    enemyX_speed += 1.5
+                    playerX_speed += 1.5
+                    playerY_speed += 1.5
 
-        elif enemyY[i] >= 506:
-            enemyY_change[i] = - enemyY_change[i]
-            if enemy_attacks[i] == False:
-                enemy_attacks[i] = True
-                enemy_score += 1
 
-        # Collision
-        collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
-        
-        if collision:
-            explosion_sound = mixer.Sound('Dog_Dies.wav')
-            explosion_sound.play()
+                enemyX[i] = random.randint(0, 736)
+                enemyY[i] = random.randint(50, 150)
+
+            enemy(enemyX[i], enemyY[i], i)
+
+            
+        # Bullet Movement
+        if bulletY <= 0:
             bulletY = 900
             bullet_state = "ready"
-            score_value += 1
-            speed_counter += 1
-                
-            if enemy_score>0:
-                counter += 1
 
-            if counter >= 20:
-                score_value -= 20
-                enemy_score -= 1
-                counter = 0
-                speed_counter = 0
-                bulletY_change -= 2
-                enemyX_speed -= 1.5
-                playerX_speed += 1.5
-                playerY_speed += 1.5
+        if bullet_state is "fire":
+            fire_bullet(bulletX, bulletY)
+            bulletY -= bulletY_change
+            
 
-            if speed_counter == 10:
-                speed_counter = 0
-                bulletY_change += 2
-                enemyX_speed += 1.5
-                playerX_speed += 1.5
-                playerY_speed += 1.5
+        player(playerX, playerY)
 
-
-            enemyX[i] = random.randint(0, 736)
-            enemyY[i] = random.randint(50, 150)
-
-        enemy(enemyX[i], enemyY[i], i)
-
-        
-    # Bullet Movement
-    if bulletY <= 0:
-        bulletY = 900
-        bullet_state = "ready"
-
-    if bullet_state is "fire":
-        fire_bullet(bulletX, bulletY)
-        bulletY -= bulletY_change
-        
-
-    player(playerX, playerY)
-
-    if ((game_over == False) and (winning_game == False)):
         show_score(textX, textY)
+            
+        pygame.display.update()
+
+        print(enemy_score)
+
+
+#def game_over_domination():
+
+#def game_over_collision():
+
+def game_winning():
+
+    global playerX, playerY, enemyX, enemyY, num_of_enemies
+
+    while True:
+        for j in range (num_of_enemies):
+            enemyY[j] = 2000
         
-    pygame.display.update()
-        
+        for j in range (num_of_enemies):
+            enemy(enemyX[j], enemyY[j], j)
+        playerX = 2000
+        playerY = 2000
+        winning_text(150, 240)
+        pygame.mixer.music.stop()
+        bullet_sound.stop()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        player(playerX, playerY)
+
+
+
+        pygame.display.update()
+
+main_menu()
+            
