@@ -21,4 +21,4 @@ The player wins the game and therefore saves the planet if he can reach at least
 Have fun and try hard.
 
 Link to download:
-https://drive.google.com/file/d/1fe8hpcnf0ggr4Ekh4EQVF9zxetr4MzTg/view?usp=sharing
+https://drive.google.com/file/d/1TYBQNwUvJKrBHnNZoUEi1HuCFJM80iXQ/view?usp=sharing
