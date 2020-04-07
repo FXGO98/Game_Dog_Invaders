@@ -219,7 +219,7 @@ def game():
 
 
                 if event.key == pygame.K_SPACE:
-                    if bullet_state is "ready":
+                    if bullet_state == "ready":
                         # Get the current x and y coordinates of the spaceship
                         bulletX = playerX
                         bulletY = playerY
@@ -265,7 +265,7 @@ def game():
 
             # Winning Game
 
-            if (score_value >= 2) and (enemy_score == 0):
+            if (score_value >= 100) and (enemy_score == 0):
                 game_winning()
                 
                 
@@ -365,7 +365,7 @@ def game():
             bulletY = 900
             bullet_state = "ready"
 
-        if bullet_state is "fire":
+        if bullet_state == "fire":
             fire_bullet(bulletX, bulletY)
             bulletY -= bulletY_change
             
